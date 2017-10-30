@@ -1,5 +1,5 @@
 <!-- Common imports -->
-<link rel="import" href="../../polymer/polymer.html" />
+<!-- <link rel="import" href="../bower_components/polymer/polymer.html" /> -->
 
 <!-- Common demo imports -->
 <link rel="import" href="../../px-demo/px-demo-header.html" />
@@ -13,16 +13,26 @@
 <!-- Imports for this component -->
 <link rel="import" href="../../px-demo/css/px-demo-styles.html" />
 <link rel="import" href="../og-data-table.html" />
+<link rel="import" href="og-wellreview-detail-row.html" />
+<link rel="import" href="og-status-col.html" />
+<link rel="import" href="og-value-col.html" />
 
 <!-- Demo DOM module -->
 <dom-module id="og-data-table-demo">
   <template>
     <style include="px-demo-styles" is="custom-style"></style>
+    <style>
+      :host{
+        --px-data-table-cell-background-color--selected : white;
+        --og-table-background-color : rgb(231,234,237);
+        $inuit-table-border-width:0;
+      }
 
+    </style>
     <!-- Header -->
     <px-demo-header
         module-name="og-data-table"
-        description="The og-data-table component is...">
+        description="The Data Table component is useful for displaying tabular data, and provides more functionality than a simple table. Users can sort ascending or descending on each column, filter within columns using simple search, select one or more rows, and edit data in-line with input validation. Rows are automatically paginated, but the user can select the number of rows to display in a single page. Cell borders can be configured by the developer to show up horizontally, vertically, or both.">
     </px-demo-header>
 
     <!-- Interactive -->
@@ -35,9 +45,25 @@
 
       <!-- Component ---------------------------------------------------------->
       <px-demo-component>
-        <og-data-table
-          counter-value="{{props.counterValue.value}}">
-        </og-data-table>
+
+        <div>
+          <og-data-table
+              include-all-columns="{{props.includeAllColumns.value}}"
+              table-data="{{props.tableData.value}}"
+              striped="{{props.striped.value}}"
+              filterable="{{props.filterable.value}}"
+              sortable="{{props.sortable.value}}"
+              selectable="{{props.selectable.value}}"
+              single-select="{{props.singleSelect.value}}"
+              show-column-chooser="{{props.showColumnChooser.value}}"
+              hide-pagination-control="{{props.hidePaginationControl.value}}"
+
+              language="{{props.language.value}}">
+              <px-data-table-column name="last" placeholder="First" filterable sortable type="html"></px-data-table-column>
+              <px-data-table-column name="status" placeholder="Status" sortable type="html" align="center"></px-data-table-column>
+              <px-data-table-column name="oil" placeholder="oil" sortable type="html" align="center"></px-data-table-column>
+          </og-data-table>
+        </div>
       </px-demo-component>
       <!-- END Component ------------------------------------------------------>
 
@@ -48,7 +74,7 @@
     </px-demo-interactive>
 
     <!-- API Viewer -->
-    <px-demo-api-viewer source="og-data-table"></px-demo-api-viewer>
+    <px-demo-api-viewer source="og-data-table" hide="{{hideLocalize}}"></px-demo-api-viewer>
 
     <!-- Footer -->
     <px-demo-footer></px-demo-footer>
@@ -62,146 +88,126 @@
 
     properties: {
 
-      /**
-       * Note: The actual data/values for `props` are placed in `this.demoProps`
-       * to create a static reference that Polymer shouldn't overwrite.
-       *
-       * On object containing all the properties the user can configure for this
-       * demo. Usually a pretty similar copy of the component's `properties` block
-       * with some additional sugar added to describe what kind of input the
-       * user will be shown and how that input should be configured.
-       *
-       * Note that `value` for each property is the default that will be set
-       * unless a config from `configs` is applied by default.
-       *
-       * @example
-       *
-       * `demoProps` is an object containing multiple objects. Each sub-object has
-       * should have a key with the name of the configurable property, and a set
-       * of values that describe that property. At a high level, you might have:
-       *
-       * ```
-       *     {
-       *       preventRangeSelection: { ... },
-       *       displayMode: { ... },
-       *       blockDatesBefore: { ... }
-       *     }
-       * ```
-       *
-       * Each sub-object should contain information about the configurable property's
-       * `type` (a reference to the JavaScript literal), a default value, and a set
-       * of additional keys that describe the input it can be changed with.
-       * The following inputs types are currently available:
-       *
-       * - 'toggle' - A toggle switch input to set Boolean values
-       * - 'text' - A simple single-line text input to set String or stringified Array/Object values
-       * - 'dropdown' - A dropdown picker that can be used to select any kind of value from a list of available options
-       *
-       * Full examples for each input:
-       *
-       * ```
-       *     {
-       *       preventRangeSelection: {
-       *         type: Boolean,
-       *         value: false,
-       *         inputType: 'toggle'
-       *       },
-       *       displayMode: {
-       *         type: String,
-       *         value: 'day',
-       *         inputType: 'dropdown',
-       *         inputChoices: ['day', 'month', 'year']
-       *       },
-       *       blockDatesBefore: {
-       *         type: String,
-       *         value: '2016-10-10T00:00:00.000Z',
-       *         inputType: 'text',
-       *         inputPlaceholder: 'ISO 8601 String'
-       *       }
-       *     }
-       * ```
-       *
-       * By default, the configurable property names are converted from camelCase
-       * to Title Case and used as input labels (e.g. 'displayMode' -> 'Display Mode').
-       * Labels can be set manually through the key `inputLabel`:
-       *
-       * ```
-       *     {
-       *       preventRangeSelection: {
-       *         type: Boolean,
-       *         value: false,
-       *         inputType: 'toggle',
-       *         inputLabel: "Stop range selection"
-       *       }
-       *     }
-       * ```
-       *
-       * @property demoProps
-       * @type {Object}
-       */
       props: {
         type: Object,
         value: function(){ return this.demoProps; }
       },
-
-      /**
-       * An array of pre-configured `props` that can be used to provide the user
-       * with a set of common examples. These configs will be made available
-       * as a set of tabs the user can click that will automatically change
-       * the `props` to specific values.
-       *
-       * @example
-       *
-       * Each config is an object. Its keys should be the names of the configurable
-       * properties defined in your `demoProps` above. Each key's value should
-       * be the new prop value for the configuration. You can also include these
-       * optional keys:
-       *
-       * - `configName` - a String value that will be used for the title of the tab
-       * - `configReset` - a Boolean, if `true` resets all props (even those not specified in the config) when this config is selected. Defaults to `false`.
-       *
-       * Example of two configs:
-       *
-       * ```
-       *     [
-       *       {
-       *         configName: "Basic",
-       *         preventRangeSelection: true,
-       *         displayMode: 'year',
-       *         blockDatesBefore: '2016-10-10T00:00:00.000Z'
-       *       },
-       *       {
-       *         configName: "Advanced",
-       *         preventRangeSelection: false,
-       *         displayMode: 'day',
-       *         blockDatesBefore: '2010-10-10T00:00:00.000Z'
-       *       }
-       *     ]
-       * ```
-       *
-       * @property demoProps
-       * @type {Array}
-       */
       configs: {
         type: Array,
         value: function(){
           return [
-            { configName: "Default",
-              configReset: true }
+            { configName: "OG Style",
+              striped: false,
+              filterable: false,
+              sortable: true,
+              selectable: true,
+              singleSelect: false,
+              showColumnChooser: true,
+              hidePaginationControl: true,
+              includeAllColumns: true },
+
+            { configName: "Simple",
+              configReset: true },
+
+            { configName: "Complex",
+              striped: true,
+              filterable: true,
+              sortable: true,
+              selectable: true,
+              singleSelect: true,
+              showColumnChooser: true,
+              hidePaginationControl: false,
+              includeAllColumns: true }
           ]
+        }
+      },
+      hideLocalize: {
+      type: Array,
+      value: function() {
+          return ['localize','useKeyIfMissing','formats','pathToResources','loadResources','app-localize-resources-error','app-localize-resources-loaded']
         }
       }
     },
+    rowData:{
 
-    /**
-     * A reference for `this.props`. Read the documentation there.
-     */
+    },
     demoProps: {
-      counterValue: {
-        type: Number,
-        defaultValue: '0',
-        inputType: 'text'
+      tableData: {
+        type: Object,
+        defaultValue: [{"first":"Valentine","last":"Meyer","email":"valentinemeyer@scentric.com", "rowDetails":{"colPad":1,"colSpan":6,"type":"html","data":"hello world"}},{"first":"Silva","last":"Alexander","email":"silvaalexander@gmail.com"},{"first":"Hopkins","last":"Wong","email":"hopkinswong@hotmail.com"},{"first": "Joe","last": "Sherman","email": "joejoe@yahoo.com"},{"first": "Jane","last": "Bartlett","email": "jane@scentric.com"}],
+        inputType: 'code:JSON'
+      },
+      language: {
+        type: String,
+        defaultValue: 'en',
+        inputType: 'text',
+        inputDisabled: true
+      },
+
+      striped: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      filterable: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      sortable: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      selectable: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      singleSelect: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      showColumnChooser: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      hidePaginationControl: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      includeAllColumns: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      lightDomContent: {
+        type: String,
+        defaultValue: '<px-data-table-column name="first"></px-data-table-column>'
       }
+    },
+    ready : function(){
+      //format data
+      for(r in this.demoProps.tableData.value){
+        if(this.demoProps.tableData.value[r].rowDetails){
+          this.demoProps.tableData.value[r].rowDetails.data = '<og-wellreview-detail-row alert-unclaimed="6" open-cases="12" field="Bakken Field"></og-wellreview-detail-row>';
+        }
+        this.demoProps.tableData.value[r].status = '<og-status-col value ="1"></og-status-col>';
+        this.demoProps.tableData.value[r].oil = '<og-value-col value ="1" trend="+" correlation="+" trendDir="up"></og-value-col>';
+      }
+      console.log('ready');
     }
+
   });
 </script>

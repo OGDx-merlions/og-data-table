@@ -44,3 +44,79 @@
 // Trumps
 @import "px-spacing-responsive-design/_trumps.spacing-responsive.scss";
 @import "px-widths-responsive-design/_trumps.widths-responsive.scss";
+
+:host{
+  $inuit-table-border-width : 0px;
+  $inuit-table-border-width : 0px;
+  --px-data-table-cell-border-top-size : 0px;
+  --px-data-table-cell-border-bottm-size:0px;
+}
+
+.table.aha-table {
+    background: var(--og-table-background-color, rgb(231,234,237))!important;
+}
+
+.col-header{
+  border-top: 0px !important;
+  border-bottom: 1px solid !important;
+}
+
+.og-table-cell{
+  border : 0px !important;
+  padding: 0px !important;
+  height: inherit;
+  display: block !important;
+}
+
+.header--container.aha-table {
+    justify-content: space-between;
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
+}
+
+td.aha-table.selected-cell__selected,  td.aha-table.selected-cell__selected ~ td.aha-table{
+  background: var(--px-data-table-cell-background-color--selected,white);
+}
+
+.table.aha-table tr.aha-table:last-of-type .td.aha-table, .table.aha-table tr.aha-table:last-of-type td.aha-table {
+    border-bottom: 0px;
+}
+
+/* hide space taken by hidden edit sapn in table cell */
+.flex .viewing .empty .px-data-table-cell{
+  display: none;
+}
+
+/*Fix border in detailed row*/
+.table.aha-table .td.aha-table, .table.aha-table td.aha-table {
+  border-bottom:0px;
+}
+
+/*Hide pagination padding*/
+.pagination.aha-table {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.expanded-row, .tr-detail{
+  background:var(--og-table-detail-background-color,var(--px-data-table-cell-background-color--selected,white));
+}
+
+.td-detail{
+  background:var(--og-table-detail-background-color,var(--px-data-table-cell-background-color--selected,white));
+  border: 0px !important;
+}
+
+.para { font-size: 1.2rem; }
+
+.th-align-left{
+  text-align: left !important;
+}
+.th-align-center{
+  text-align: center !important;
+}
+.th-align-right{
+  text-align: right !important;
+}
+.column-head{
+  width: 100%;
+}

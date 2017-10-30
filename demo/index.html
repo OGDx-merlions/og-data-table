@@ -1,0 +1,50 @@
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../px-demo/css/px-demo-styles.html" />
+<link rel="import" href="../../px-demo/px-demo-collection.html" />
+<link rel="import" href="../../px-demo/px-demo-code-editor.html" />
+
+<!-- Import peer demo pages -->
+<link rel="import" href="og-data-table-demo.html" />
+<link rel="import" href="og-data-table-column-demo.html" />
+<link rel="import" href="og-data-table-highlight-demo.html" />
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+    <!-- Theme includes -->
+    <style include="px-demo-styles" is="custom-style"></style>
+
+    <!-- Demo list/view change entrypoint -->
+    <px-demo-collection demos="{{demos}}"></px-demo-collection>
+
+    <!-- Code Editor -->
+    <px-demo-code-editor props="{{props}}"></px-demo-code-editor>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    properties: {
+
+      demos: {
+        type: Array,
+        value: function(){
+          return [
+            { name: "og-data-table",
+              tagName: "og-data-table-demo" },
+            { name: "px-data-table-column",
+              tagName: "og-data-table-column-demo" },
+            { name: "px-data-table-highlight",
+              tagName: "og-data-table-highlight-demo" }
+          ]
+        }
+      },
+
+      chosenDemoName: {
+        type: String
+      }
+    }
+  });
+</script>
