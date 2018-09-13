@@ -12,10 +12,10 @@ const combiner = require('stream-combiner2');
 const bump = require('gulp-bump');
 const argv = require('yargs').argv;
 /* Used to transpile JavaScript */
-const babel = require('gulp-babel');
-const rename = require('gulp-rename');
-const sourcemaps = require('gulp-sourcemaps');
-const cache = require('gulp-cached');
+ const babel = require('gulp-babel');
+ const rename = require('gulp-rename');
+ const sourcemaps = require('gulp-sourcemaps');
+ const cache = require('gulp-cached');
 
 const sassOptions = {
   importer: importOnce,
