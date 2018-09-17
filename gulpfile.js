@@ -1,4 +1,13 @@
 'use strict';
+/*
+gulpfile has been updated to gulp version 4.0. Use below instruction to install gulp version 4
+
+npm uninstall -g gulp
+npm uninstall gulp-cli
+
+npm install -g gulp-cli
+npm install --save-dev github:gulpjs/gulp#4.0 
+*/
 const path = require('path');
 const gulp = require('gulp');
 const pkg = require('./package.json');
@@ -16,6 +25,7 @@ const argv = require('yargs').argv;
  const rename = require('gulp-rename');
  const sourcemaps = require('gulp-sourcemaps');
  const cache = require('gulp-cached');
+ const del = require("del");
 
 const sassOptions = {
   importer: importOnce,
@@ -26,9 +36,7 @@ const sassOptions = {
 };
 
 gulp.task('clean', function() {
-  return gulp.src(['.tmp', 'css'], {
-    read: false
-  }).pipe($.clean());
+  return del(['.tmp', 'css']);  
 });
 
 function handleError(err){
@@ -48,7 +56,7 @@ function buildCSS(){
   ]).on('error', handleError);
 }
 
-gulp.task('sass', function() {
+function sass() {
   return gulp.src(['./sass/*.scss'])
     .pipe(cache('sassing'))
     .pipe(buildCSS())
@@ -59,14 +67,16 @@ gulp.task('sass', function() {
     }))
     .pipe(gulp.dest('css'))
     .pipe(browserSync.stream({match: 'css/*.html'}));
-});
+}
+
+gulp.task('sass',sass);
 
 // Globbing pattern to find ES6 source files that need to be transpiled
 const ES6_SRC = './*.es6.js';
 // Output directory for transpiled files
 const ES5_DEST = './dist';
 
-gulp.task('transpile', function() {
+function transpile() {
   return gulp.src(ES6_SRC)
     .pipe(cache('transpiling'))
     .pipe(sourcemaps.init())
@@ -81,11 +91,13 @@ gulp.task('transpile', function() {
     }))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(ES5_DEST));
-});
+}
+
+gulp.task('transpile', transpile);
 
 gulp.task('watch', function() {
-  gulp.watch(ES6_SRC, ['transpile']);
-  gulp.watch(['sass/*.scss'], ['sass']);
+  gulp.watch(ES6_SRC, transpile);
+  gulp.watch(['sass/*.scss'], sass);
 });
 
 gulp.task('serve', function() {
@@ -98,8 +110,8 @@ gulp.task('serve', function() {
     server: ['./', 'bower_components'],
   });
 
-  gulp.watch(ES6_SRC, ['transpile']);
-  gulp.watch(['sass/*.scss'], ['sass']);
+  gulp.watch(ES6_SRC, transpile);
+  gulp.watch(['sass/*.scss'], sass);
   gulp.watch(['css/*-styles.html', '*.html', `${ES5_DEST}/*.js`, 'demo/*.html']).on('change', browserSync.reload);
 });
 
@@ -122,5 +134,5 @@ gulp.task('bump:major', function(){
 });
 
 gulp.task('default', function(callback) {
-  gulpSequence('clean', 'sass', 'transpile')(callback);
+  gulp.series('clean', 'sass', 'transpile')(callback);
 });
